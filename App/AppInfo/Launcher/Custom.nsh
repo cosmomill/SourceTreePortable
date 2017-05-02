@@ -90,21 +90,36 @@ FunctionEnd
 Function BackupUserConfig
 	;${DebugMsg} "SourceTree user config directory is $R8"
 	WriteINIStr $EXEDIR\Data\settings\$AppIDSettings.ini $AppIDSettings LastUserConfigPath $R8
-	
+
 	; Check if LastUserConfigPath has changed
-	StrCmp $LastUserConfigPath $R8 done
-		error:
-			; Restore backuped user config
-			;${DebugMsg} "SourceTree Restore backuped user config $EXEDIR\Data\user.config"
-			${If} ${FileExists} $EXEDIR\Data\user.config
-				CopyFiles /SILENT $EXEDIR\Data\user.config $R8
-			${EndIf}
-		done:
-			; Backup user config
-			;${DebugMsg} "SourceTree Backup user config $R8\user.config"
-			${If} ${FileExists} $R8\user.config
-				CopyFiles /SILENT $R8\user.config $EXEDIR\Data
-			${EndIf}
+	StrCmp $R0 $R8 0 notfound
+		; Backup user.config
+		${If} ${FileExists} $R8\user.config
+			CopyFiles /SILENT $R8\user.config $EXEDIR\Data
+		${EndIf}
+		; Backup opentabs.xml
+		${If} ${FileExists} $EXEDIR\Data\ClientFiles\SourceTree\opentabs.xml
+			CopyFiles /SILENT $EXEDIR\Data\ClientFiles\SourceTree\opentabs.xml $EXEDIR\Data
+		${EndIf}
+		; Backup bookmarks.xml
+		${If} ${FileExists} $EXEDIR\Data\ClientFiles\SourceTree\bookmarks.xml
+			CopyFiles /SILENT $EXEDIR\Data\ClientFiles\SourceTree\bookmarks.xml $EXEDIR\Data
+		${EndIf}
+		Goto done
+	notfound:
+		; Restore backuped user.config
+		${If} ${FileExists} $EXEDIR\Data\user.config
+			CopyFiles /SILENT $EXEDIR\Data\user.config $R8
+		${EndIf}
+		; Restore backuped opentabs.xml
+		${If} ${FileExists} $EXEDIR\Data\opentabs.xml
+			CopyFiles /SILENT $EXEDIR\Data\opentabs.xml $EXEDIR\Data\ClientFiles\SourceTree
+		${EndIf}
+		; Restore backuped bookmarks.xml
+		${If} ${FileExists} $EXEDIR\Data\bookmarks.xml
+			CopyFiles /SILENT $EXEDIR\Data\bookmarks.xml $EXEDIR\Data\ClientFiles\SourceTree
+		${EndIf}
+	done:
 FunctionEnd
 
 ${SegmentFile}
@@ -113,8 +128,8 @@ Var LastLocalAppData
 Var LastDocuments
 Var LastUserConfigPath
 
-${SegmentPre}	
-	
+${SegmentPre}
+
 ClearErrors
 
 ; Custom Code for using last LOCALAPPDATA in launcher.ini[Environment] - use %LastLocalAppData%  
@@ -145,7 +160,7 @@ ${DebugMsg} "SourceTree LastDocuments:DoubleBackslash is $1"
 StrCmp $EXEDIR $LastDrive$LastDirectory done
 	error:
 		${DebugMsg} "SourceTree LastPortableAppsBaseDir has changed."
-		MessageBox MB_OK|MB_ICONSTOP "The path to the App directory which contains the portable app$\r$\nhas changed since last start up. To restore user settings,$\r$\nread and accept the license agreement, skip setup and restart$\r$\nSourceTree."
+		MessageBox MB_OK|MB_ICONSTOP "The path to the App directory which contains the portable app$\r$\nhas changed since last start up. To restore user settings,$\r$\nskip setup and restart SourceTree."
 		${GetParent} $LastUserConfigPath $0 
 		${GetAfterChar} $1 $0 "\"
 		${DebugMsg} "SourceTree delete old user config directory $EXEDIR\Data\ClientFiles\$1"
@@ -156,6 +171,11 @@ StrCmp $EXEDIR $LastDrive$LastDirectory done
 
 ${SegmentPost}
 
+; Pass $LastUserConfigPath to BackupUserConfig function
+StrCpy $R0 $LastUserConfigPath
 ${Locate} "$EXEDIR\Data\ClientFiles" "/L=F /M=user.config" "BackupUserConfig"
-	
+
+; Kill pageant.exe
+Exec "taskkill /im pageant.exe /f"
+
 !macroend

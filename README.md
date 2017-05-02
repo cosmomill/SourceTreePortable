@@ -1,17 +1,15 @@
-Install Atlassian SourceTree Portable 
---------------------------------
+# Atlassian SourceTree Portable [![Release](https://img.shields.io/badge/release-v2.0.19.1.0-blue.svg)](https://github.com/cosmomill/SourceTreePortable/releases/latest)
 
-Download and run [SourceTreePortable_0.0.1_Development_test_1.paf.exe](SourceTreePortable_0.0.1_Development_test_1.paf.exe?raw=true)
+[Download the latest version](https://github.com/cosmomill/SourceTreePortable/releases/latest) of SourceTree Portable.
 
-#####Getting Atlassian SourceTree
+## Installation Prerequisites
 
-Download [SourceTreeSetup_1.6.12.exe](http://downloads.atlassian.com/software/sourcetree/windows/SourceTreeSetup_1.6.12.exe)
+- Windows 7 or Windows 10
+- .NET Framework 4.5
+- At least 360 MB of free disk space
 
-To extract files from SourceTreeSetup_1.6.12.exe file at the command line, type:
+## Contributing Bug reports
 
-<pre>
-SourceTreeSetup_1.6.12.exe /extract
-msiexec /a SourceTreeSetup_1.6.12.msi /qb TARGETDIR="%temp%\SourceTree"
-xcopy "%temp%\SourceTree" "drive\PortableApps\SourceTreePortable\App\SourceTree" /S /i
-rmdir "%temp%\SourceTree" /S
-</pre>
+We use GitHub for bug tracking. Please search the existing issues for your bug and create a new one if the issue is not yet tracked!
+
+https://github.com/cosmomill/SourceTreePortable/issues
