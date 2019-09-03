@@ -1,4 +1,4 @@
-# Atlassian SourceTree Portable [![Release](https://img.shields.io/badge/release-3.1.2.0-blue.svg)](https://github.com/biryukovpavel/SourceTreePortable/releases/latest)
+# Atlassian SourceTree Portable [![Release](https://img.shields.io/badge/release-3.2.6.0-blue)](https://github.com/biryukovpavel/SourceTreePortable/releases/latest)
 
 [Download the latest version](https://github.com/biryukovpavel/SourceTreePortable/releases/latest) of SourceTree Portable.
 
